@@ -6,10 +6,11 @@ const getUsers = (req: Request, res: Response) => {
     const users = userModel.getUsers()
     res.status(200).json(users)
 }
-const getUserByUsername = (req: Request, res: Response) => { 
+const getUserByUsername = (req: Request, res: Response) => {
     if (req.session && req.session.username) {
         const user = userModel.findByUserName(req.session.username)
         res.status(200).json(user)
+        return
     }
     res.status(500).send('User is not logged in')
 }
@@ -44,9 +45,28 @@ const addUser = async (req: Request<{}, {}, Omit<User, 'id'>>, res: Response) =>
     res.status(201).json(user)
 }
 
+const clearCookie = (req: Request, res: Response) => {
+    req.session = null
+    res.status(200).json({
+        hello: "Session cookie cleared!"
+    })
+}
+
 const logout = (req: Request, res: Response) => {
     req.session = null
-    res.status(300).send('Cookie cleared')
+    res.status(200).json({ content: "Session cookie cleared!" })
+}
+
+const checkCookie = (req: Request, res: Response) => {
+    if (req.session && req.session.isLoggedIn) {
+        res.status(200).json({
+            content: req.session.isLoggedIn
+        })
+        return
+    }
+    res.status(500).json({
+        content: "No cookie found!"
+    })
 }
 
 export default {
@@ -54,5 +74,7 @@ export default {
     getUserByUsername,
     loginUser,
     addUser,
-    logout
+    logout,
+    clearCookie,
+    checkCookie
 }

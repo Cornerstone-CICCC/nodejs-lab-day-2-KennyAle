@@ -1,12 +1,52 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 ---
+
 <Layout>
-    <a href="/">Home</a>
-    <h1>Login</h1>
-    <form action="/login" method="POST">
-        <input type="text" id="username" name="username" placeholder="Username" required>
-        <input type="text" id="password" name="password" placeholder="Password" required>
-        <input type="submit" name="submit" value="Log In">
-    </form>
+  <a href="/">Home</a>
+  <h1>Login</h1>
+  <form id="login" method="POST">
+    <input
+      type="text"
+      id="username"
+      name="username"
+      placeholder="Username"
+      required
+    />
+    <input
+      type="text"
+      id="password"
+      name="password"
+      placeholder="Password"
+      required
+    />
+    <input type="submit" name="submit" value="Log In" />
+  </form>
 </Layout>
+
+<script>
+  const login = document.querySelector("#login") as HTMLFormElement;
+  login.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const formObj = Object.fromEntries(formData.entries());
+
+    const res = await fetch(`http://localhost:4500/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formObj),
+    });
+
+    if (!res.ok) {
+      alert("Credentials not matching");
+    }
+
+    if (res.ok) {
+      window.location.href = "http://localhost:4321/profile";
+    }
+  });
+</script>

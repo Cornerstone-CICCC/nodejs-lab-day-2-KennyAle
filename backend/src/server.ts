@@ -1,14 +1,19 @@
 import express, { Request, Response } from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import userRouter from './routes/user.routes'
 import cookieSession from 'cookie-session'
+import cors from 'cors'
+import userRouter from './routes/user.routes'
+import dotenv from 'dotenv'
 dotenv.config()
 
-// Start Server
+// Create Server
 const app = express()
 
 // Middleware
+app.use(cors({
+    origin: 'http://localhost:4321',
+    credentials: true
+}))
+app.use(express.json())
 const SIGN_KEY = process.env.COOKIE_SIGN_KEY
 const ENCRYPT_KEY = process.env.COOKIE_ENCRYPT_KEY
 if (!SIGN_KEY || !ENCRYPT_KEY) {
@@ -20,13 +25,10 @@ app.use(cookieSession({
         SIGN_KEY,
         ENCRYPT_KEY
     ],
+    secure: false,
     maxAge: 5 * 60 * 1000
 }))
-app.use(cors({
-    origin: ['http://localhost:4321', 'http://localhost:4500'],
-    credentials: true
-}))
-app.use(express.json())
+
 app.use(express.urlencoded({ extended: true }))
 
 // Routes

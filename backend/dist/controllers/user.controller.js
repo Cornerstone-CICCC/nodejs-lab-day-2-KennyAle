@@ -21,6 +21,7 @@ const getUserByUsername = (req, res) => {
     if (req.session && req.session.username) {
         const user = user_model_1.default.findByUserName(req.session.username);
         res.status(200).json(user);
+        return;
     }
     res.status(500).send('User is not logged in');
 };
@@ -54,14 +55,33 @@ const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     res.status(201).json(user);
 });
+const clearCookie = (req, res) => {
+    req.session = null;
+    res.status(200).json({
+        hello: "Session cookie cleared!"
+    });
+};
 const logout = (req, res) => {
     req.session = null;
-    res.status(300).send('Cookie cleared');
+    res.status(200).json({ content: "Session cookie cleared!" });
+};
+const checkCookie = (req, res) => {
+    if (req.session && req.session.isLoggedIn) {
+        res.status(200).json({
+            content: req.session.isLoggedIn
+        });
+        return;
+    }
+    res.status(500).json({
+        content: "No cookie found!"
+    });
 };
 exports.default = {
     getUsers,
     getUserByUsername,
     loginUser,
     addUser,
-    logout
+    logout,
+    clearCookie,
+    checkCookie
 };

@@ -11,4 +11,6 @@ userRouter.get('/check-auth', user_controller_1.default.getUserByUsername);
 userRouter.post('/login', user_controller_1.default.loginUser);
 userRouter.post('/signup', user_controller_1.default.addUser);
 userRouter.get('/logout', user_controller_1.default.logout);
+userRouter.get('/check-cookie', user_controller_1.default.checkCookie);
+userRouter.get('/clear-cookie', user_controller_1.default.clearCookie);
 exports.default = userRouter;

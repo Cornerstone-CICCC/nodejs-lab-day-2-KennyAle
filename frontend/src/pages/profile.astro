@@ -1,13 +1,86 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout>
-	<h1>Welcome to the Profile Page</h1>
+  <div class="content">
+    <h1>Welcome to the Profile Page</h1>
     <ul>
-        <li>Username</li>
-        <li>First Name</li>
-        <li>Last Name</li>
+      <li id="username">Username</li>
+      <li id="fname">First Name</li>
+      <li id="lname">Last Name</li>
     </ul>
-    <button>Log Out</button>
+    <button id="btn">Log Out</button>
+    <button id="btn2">Fill</button>
+  </div>
 </Layout>
+
+<script>
+  const username = document.querySelector("#username") as HTMLLIElement;
+  const fname = document.querySelector("#fname") as HTMLLIElement;
+  const lname = document.querySelector("#lname") as HTMLLIElement;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    getData();
+  });
+
+  const getData = async () => {
+    const res = await fetch(`http://localhost:4500/check-auth`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      window.location.href = "/";
+      return;
+    }
+    const data = await res.json();
+    console.log(data);
+    username.innerHTML = `${data.username}`;
+    fname.innerHTML = `${data.firstname}`;
+    lname.innerHTML = `${data.lastname}`;
+    return data;
+  };
+
+  const btn = document.querySelector("#btn") as HTMLButtonElement;
+
+  // const readCookie = async () => {
+  //   const res = await fetch(`http://localhost:4500/check-cookie`, {
+  //     method: "GET",
+  //     credentials: "include",
+  //   });
+  //   if (!res.ok) {
+  //     window.location.href = "/";
+  //     return;
+  //   }
+  //   const data = await res.json();
+  //   return data;
+  // };
+
+  const clearCookie = async () => {
+    const res = await fetch(`http://localhost:4500/clear-cookie`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const data = await res.json();
+    return data;
+  };
+
+  btn.addEventListener("click", async () => {
+    const data = await clearCookie();
+    alert(`${data.content} Redirecting to homepage in 3 seconds...`);
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 3000);
+  });
+
+  const content = document.querySelector(".content") as HTMLDivElement;
+  // const render = async () => {
+  //   const data = await readCookie();
+  //   content.innerHTML = data.content;
+  // };
+
+  // render();
+</script>

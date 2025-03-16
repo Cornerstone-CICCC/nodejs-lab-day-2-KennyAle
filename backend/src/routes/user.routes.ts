@@ -8,5 +8,7 @@ userRouter.get('/check-auth', userController.getUserByUsername)
 userRouter.post('/login', userController.loginUser)
 userRouter.post('/signup', userController.addUser)
 userRouter.get('/logout', userController.logout)
+userRouter.get('/check-cookie', userController.checkCookie)
+userRouter.get('/clear-cookie', userController.clearCookie)
 
 export default userRouter
